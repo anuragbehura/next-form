@@ -1,6 +1,16 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
+  experimental: {
+    serverActions: {
+      allowedOrigins: [
+        'localhost:3000', 
+        // Add any other allowed origins
+      ],
+      // Optional additional configurations
+      bodySizeLimit: '5mb'
+    }
+  },
   images: {
     domains: ["images.unsplash.com"], // Add any other external domains here
   },
