@@ -8,6 +8,7 @@ import { connectToDatabase } from "@/utils/dbConnect";
 import { createSlug } from "@/utils/slug";
 
 class UserNotFoundErr extends Error { }
+class FormNotFoundErr extends Error { }
 
 export async function GetFormStats() {
     // Use auth() to get user ID instead of currentUser()
@@ -159,9 +160,103 @@ export async function GetFormBySlug(slug: string) {
     return form ? {
         _id: form._id.toString(), // Convert ObjectId to string
         userId: form.userId,
+        published: form.published,
         name: form.name,
         slug: form.slug,
         description: form.description,
+        content: form.content,
+        shareURL: form.shareURL,
+        createdAt: form.createdAt?.toISOString(),
+        updatedAt: form.updatedAt?.toISOString(),
         // ... other properties you need
     } : null;
 }
+
+
+export async function UpdateFormContent(id: number, jsonContent: string) {
+    try {
+        const user = await currentUser();
+        if (!user?.id) {
+            throw new UserNotFoundErr();
+        }
+
+        await connectToDatabase();
+
+        const updatedForm = await Form.findOneAndUpdate(
+            { userId: user.id, _id: id.toString() },
+            { $set: { content: jsonContent } },
+            {
+                new: true,
+                runValidators: true,
+                lean: true // Returns a plain JavaScript object instead of a Mongoose document
+            }
+        );
+
+        if (!updatedForm) {
+            throw new FormNotFoundErr(`Form with id ${id} not found`);
+        }
+
+        // Serialize the result to ensure only simple objects are returned
+        return {
+            ...updatedForm,
+            _id: updatedForm._id.toString(),
+            createdAt: updatedForm.createdAt?.toISOString(),
+            updatedAt: updatedForm.updatedAt?.toISOString(),
+        };
+    } catch (error) {
+        if (error instanceof UserNotFoundErr || error instanceof FormNotFoundErr) {
+            throw error;
+        }
+        throw new Error('Failed to update form');
+    }
+}
+
+export async function PublishForm(id: string) {
+    const user = await currentUser();
+    if (!user?.id) {
+        throw new UserNotFoundErr();
+    }
+
+    await connectToDatabase();
+
+    const updatedForm = await Form.findOneAndUpdate(
+        {
+            userId: user.id,
+            _id: id,
+        },
+        {
+            published: true
+        },
+        {
+            new: true,
+            lean: true // Get plain JavaScript object
+        }
+    );
+
+    if (!updatedForm) {
+        throw new Error('Form not found');
+    }
+
+    // Return serialized form data
+    return {
+        _id: updatedForm._id.toString(),
+        userId: updatedForm.userId,
+        published: updatedForm.published,
+        name: updatedForm.name,
+        slug: updatedForm.slug,
+        description: updatedForm.description,
+        content: updatedForm.content,
+        visits: updatedForm.visits,
+        submissions: updatedForm.submission,
+        formSubmissions: updatedForm.FormSubmissions?.map(sub => ({
+            _id: sub._id.toString(),
+            ...sub,
+            createdAt: sub.createdAt?.toISOString(),
+            updatedAt: sub.updatedAt?.toISOString(),
+        })),
+        createdAt: updatedForm.createdAt?.toISOString(),
+        shareURL: updatedForm.shareURL,
+        updatedAt: updatedForm.updatedAt?.toISOString()
+    };
+}
+
