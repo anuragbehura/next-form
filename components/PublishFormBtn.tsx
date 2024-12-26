@@ -34,6 +34,7 @@ function PublishFormBtn({ id }: PublishFormBtnProps) {
       });
       router.refresh();
     } catch (error) {
+      console.error(error); 
       toast({
         title: "Error",
         description: "Something went wrong.",

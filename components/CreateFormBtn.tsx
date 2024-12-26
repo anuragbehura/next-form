@@ -49,6 +49,7 @@ function CreateFormBtn() {
       // console.log(formData.id);
       router.push(`/builder/${formData.slug}`)
     } catch (error) {
+      console.error(error); 
       toast({
         title: "Error",
         description: "Something went wrong, please try again later",
