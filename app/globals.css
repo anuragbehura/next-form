@@ -6,6 +6,24 @@ body {
   font-family: Arial, Helvetica, sans-serif;
 }
 
+/* Scrollbar */
+
+/* width */
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+/* ::-webkit-scrollbar-track {
+    background: #fff;
+} */
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: rgb(71, 71, 193);
+    border-radius: 5px;
+}
+
 
 @layer base {
   :root {

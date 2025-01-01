@@ -6,6 +6,7 @@ import { Form } from '../Model/formModel';
 import { formSchemaType, formSchema } from "@/schema/form";
 import { connectToDatabase } from "@/utils/dbConnect";
 import { createSlug } from "@/utils/slug";
+import { FormSubmission } from "@/Model/submissionModel";
 
 class UserNotFoundErr extends Error { }
 class FormNotFoundErr extends Error { }
@@ -19,9 +20,7 @@ export async function GetFormStats() {
     }
 
     // Ensure MongoDB connection
-    if (!mongoose.connections[0].readyState) {
-        await mongoose.connect(process.env.MONGO_URI!);
-    }
+    await connectToDatabase();
 
     // Aggregate form stats for the user
     const stats = await Form.aggregate([
@@ -33,7 +32,7 @@ export async function GetFormStats() {
             $group: {
                 _id: null,
                 totalVisits: { $sum: '$visits' },
-                totalSubmissions: { $sum: '$submission' }
+                totalSubmissions: { $sum: '$submissions' }
             }
         }
     ]);
@@ -149,11 +148,6 @@ export async function GetFormBySlug(slug: string) {
 
     await connectToDatabase();
 
-    // Check if the ID is a valid ObjectId
-    // if (!mongoose.Types.ObjectId.isValid(id)) {
-    //     throw new Error("Invalid form ID");
-    // }
-
     const form = await Form.findOne({ slug, userId: user.id });
 
     // Convert Mongoose document to a plain object
@@ -165,6 +159,8 @@ export async function GetFormBySlug(slug: string) {
         slug: form.slug,
         description: form.description,
         content: form.content,
+        visits: form.visits,
+        submissions: form.submissions,
         shareURL: form.shareURL,
         createdAt: form.createdAt?.toISOString(),
         updatedAt: form.updatedAt?.toISOString(),
@@ -247,7 +243,7 @@ export async function PublishForm(id: string) {
         description: updatedForm.description,
         content: updatedForm.content,
         visits: updatedForm.visits,
-        submissions: updatedForm.submission,
+        submissions: updatedForm.submissions,
         formSubmissions: updatedForm.FormSubmissions?.map(sub => ({
             _id: sub._id.toString(),
             ...sub,
@@ -259,4 +255,111 @@ export async function PublishForm(id: string) {
         updatedAt: updatedForm.updatedAt?.toISOString()
     };
 }
+
+
+export async function GetFormContentByUrl(formUrl: string) {
+
+    await connectToDatabase();
+    const form = await Form.findOneAndUpdate(
+        { shareURL: formUrl },
+        { $inc: { visits: 1 } },
+        { 
+            new: true,
+            select: 'content'
+        }
+    );
+    
+    if (!form) {
+        throw new Error('Form not found');
+    }
+
+    return { content: form.content };
+}
+
+
+export async function SubmitForm(formUrl: string, content: string) {
+    const session = await mongoose.startSession();
+    session.startTransaction();
+
+    try {
+        await connectToDatabase();
+
+        // 1. Find the form first
+        const form = await Form.findOne({ shareURL: formUrl }).session(session);
+        if (!form) {
+            await session.abortTransaction();
+            return { success: false, error: 'Form not found' };
+        }
+
+        // 2. Create submission
+        const formSubmission = await FormSubmission.create([{
+            formId: form._id,
+            content: content
+        }], { session });
+
+        // 3. Update form with submission reference and increment count
+        await Form.findByIdAndUpdate(
+            form._id,
+            {
+                $push: { FormSubmissions: formSubmission[0]._id },
+                $inc: { submissions: 1 }
+            },
+            { new: true, session }
+        );
+
+        // 4. Commit the transaction
+        await session.commitTransaction();
+
+        // 5. Serialize the response data
+        const serializedSubmission = {
+            id: formSubmission[0]._id.toString(),
+            formId: formSubmission[0].formId.toString(),
+            content: formSubmission[0].content,
+            createdAt: formSubmission[0].createdAt?.toISOString(),
+            updatedAt: formSubmission[0].updatedAt?.toISOString()
+        };
+
+        return {
+            success: true,
+            data: serializedSubmission
+        };
+
+    } catch (error) {
+        // Rollback the transaction on error
+        await session.abortTransaction();
+        console.error('Submission error:', error);
+        return {
+            success: false,
+            error: 'Failed to submit form'
+        };
+    } finally {
+        session.endSession();
+    }
+}
+
+
+export async function GetFormWithSubmissions(id: string) {
+    const user = await currentUser();
+    if (!user?.id) {
+        throw new UserNotFoundErr();
+    }
+
+    await connectToDatabase();
+
+    const form = await Form.findOne({
+        userId: user.id,
+        _id: id
+    }).populate({
+        path: 'FormSubmissions', 
+        match: { formId: id }
+    });
+
+    return form;
+}
+
+
+
+
+
+
 

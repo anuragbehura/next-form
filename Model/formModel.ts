@@ -11,7 +11,7 @@ export interface IForm extends mongoose.Document {
   description: string;
   content: string;
   visits: number;
-  submission: number;
+  submissions: number;
   shareURL: string;
   FormSubmissions?: mongoose.Types.ObjectId[];
 }
@@ -53,12 +53,13 @@ const FormSchema = new mongoose.Schema<IForm>({
     type: Number, 
     default: 0 
   },
-  submission: { 
+  submissions: { 
     type: Number, 
     default: 0 
   },
   shareURL: { 
-    type: String, 
+    type: String,
+    unique: true, 
     default: () => uuidv4() 
   },
   FormSubmissions: [{ 
@@ -71,3 +72,7 @@ const FormSchema = new mongoose.Schema<IForm>({
 
 // Prevent model recompilation
 export const Form = mongoose.models.Form || mongoose.model<IForm>('Form', FormSchema);
+
+
+
+
