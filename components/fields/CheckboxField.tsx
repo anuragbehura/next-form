@@ -1,7 +1,6 @@
 "use client";
 
 import { ElementsType, FormElement, FormElementInstance, SubmitFunction } from "../FormElements";
-import {MdTextFields} from "react-icons/md"
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Switch } from "../ui/switch";
@@ -110,7 +109,7 @@ function FormComponent({
       setError(isInvalid === true);
     }, [isInvalid]);
 
-    const { label, required, placeHolder, helperText } = element.extraAttributes;
+    const { label, required, helperText } = element.extraAttributes;
   const id = `checkbox-${element.id}`;
   return (
     <div className="flex items-top space-x-2">

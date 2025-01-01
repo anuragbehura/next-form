@@ -1,7 +1,6 @@
 "use client";
 
 import { ElementsType, FormElement, FormElementInstance, SubmitFunction } from "../FormElements";
-import {MdTextFields} from "react-icons/md"
 import { Label } from "../ui/label";
 import { Input } from "../ui/input";
 import { Switch } from "../ui/switch";
@@ -78,7 +77,7 @@ function DesignerComponent({
     elementInstance
 }: {elementInstance: FormElementInstance;}) {
     const element = elementInstance as CustomInstance;
-    const { label, required, placeHolder, helperText } = element.extraAttributes;
+    const { label, required, helperText } = element.extraAttributes;
     return (
     <div className="flex flex-col gap-2 w-full">
         <Label>
@@ -115,7 +114,7 @@ function FormComponent({
       setError(isInvalid === true);
     }, [isInvalid]);
 
-    const { label, required, placeHolder, helperText } = element.extraAttributes;
+    const { label, required, helperText } = element.extraAttributes;
     return (
     <div className="flex flex-col gap-2 w-full">
         <Label className={cn(error && "text-red-500")}>
