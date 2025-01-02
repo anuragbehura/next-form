@@ -8,7 +8,7 @@ async function BuilderPage({params}:{
     slug: string;
   }
 }) {
-  const { slug } = await params;
+  const { slug } = params;
   // console.log("Slug received in BuilderPage:", slug);
   const form = await GetFormBySlug(slug);
   if (!form) {
