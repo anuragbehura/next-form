@@ -13,13 +13,9 @@ import { format, formatDistance } from 'date-fns';
 import { Badge } from '@/components/ui/badge';
 import { Checkbox } from '@/components/ui/checkbox';
 
-
-async function FormPage({ params }: {
-  params: {
-    slug: string;
-  }
-}) {
-  const { slug } = await params;
+type tParams = Promise<{ slug: string }>;
+async function FormPage(props: { params: tParams }) {
+  const { slug } = await props.params;
   const form = await GetFormBySlug(slug);
 
   if (!form) {
