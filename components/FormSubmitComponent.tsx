@@ -117,7 +117,7 @@ function FormSubmitComponent({
                 {content.map((element) => {
                     const FormElement = FormElements[element.type].formComponent;
                     return (
-                        <FormElement key={element.id} elementInstance={element} submitValue={submitValue} isInvalid={formErrors.current[element.id]} defaultValue={formValues.current[element.id]} />
+                        <FormElement key={element.id} elementInstance={element} submitValue={submitValue} isInvaild={formErrors.current[element.id]} defaultValue={formValues.current[element.id]} />
                     )
                 })}
                 <Button

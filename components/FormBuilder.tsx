@@ -1,7 +1,6 @@
 "use client"
 
 import React, { useEffect, useState } from 'react';
-import { IForm } from "@/Model/formModel";
 import PreviewDialogBtn from './PreviewDialogBtn';
 import SaveFormBtn from './SaveFormBtn';
 import PublishFormBtn from './PublishFormBtn';
@@ -16,9 +15,10 @@ import { Copy, Check, MoveLeft, MoveRight } from 'lucide-react';
 import { toast } from "@/hooks/use-toast";
 import Link from 'next/link';
 import Confetti from 'react-confetti';
+import { IFormPlain } from '@/lib/IFORMPlain';
 
 function FormBuilder({ form }: {
-  form: IForm
+  form: IFormPlain
 }) {
 
   const { setElements, setSelectedElement } = useDesigner();

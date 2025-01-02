@@ -136,8 +136,8 @@ async function SubmissionTable({id}: {id: string}) {
       case "CheckboxField":
         columns.push({
           id: element.id,
-          label: element.extraAttributes?.label,
-          required: element.extraAttributes?.required,
+          label: element.extraAttributes?.label as string,
+          required: element.extraAttributes?.required as boolean,
           type: element.type,
         });
         break;
@@ -145,9 +145,15 @@ async function SubmissionTable({id}: {id: string}) {
           break;
     }
   });
+
+  interface FormSubmission {
+    content: string; // JSON string representing the form submission content
+    createdAt: string; // or Date, depending on your schema
+    // Add other properties if necessary
+  }
   
   const rows: Row[] = [];
-  form.FormSubmissions.forEach((submission) => {
+  form.FormSubmissions.forEach((submission: FormSubmission) => {
     const content = JSON.parse(submission.content);
     console.log("content", form.FormSubmissions);
     rows.push({

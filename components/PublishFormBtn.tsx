@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/alert-dialog";
 
 interface PublishFormBtnProps {
-  id: number;
+  id: string;
 }
 
 function PublishFormBtn({ id }: PublishFormBtnProps) {

@@ -3,6 +3,7 @@ import { v4 as uuidv4 } from 'uuid';
 
 // Interface to define the document structure
 export interface IForm extends mongoose.Document {
+  _id: string;
   userId: string;
   createdAt: Date;
   published: boolean;
@@ -14,6 +15,7 @@ export interface IForm extends mongoose.Document {
   submissions: number;
   shareURL: string;
   FormSubmissions?: mongoose.Types.ObjectId[];
+  updatedAt: Date;
 }
 
 // Create the schema

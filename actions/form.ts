@@ -2,11 +2,12 @@
 
 import { currentUser } from "@clerk/nextjs/server";
 import mongoose from 'mongoose';
-import { Form } from '../Model/formModel';
+import { Form} from '../Model/formModel';
 import { formSchemaType, formSchema } from "@/schema/form";
 import { connectToDatabase } from "@/utils/dbConnect";
 import { createSlug } from "@/utils/slug";
 import { FormSubmission } from "@/Model/submissionModel";
+import { IFormPlain } from "@/lib/IFORMPlain";
 
 class UserNotFoundErr extends Error { }
 class FormNotFoundErr extends Error { }
@@ -140,7 +141,7 @@ export async function GetForms() {
 // }
 
 
-export async function GetFormBySlug(slug: string) {
+export async function GetFormBySlug(slug: string): Promise<IFormPlain | null>{
     const user = await currentUser();
     if (!user) {
         throw new UserNotFoundErr();
@@ -169,7 +170,7 @@ export async function GetFormBySlug(slug: string) {
 }
 
 
-export async function UpdateFormContent(id: number, jsonContent: string) {
+export async function UpdateFormContent(id: string, jsonContent: string) {
     try {
         const user = await currentUser();
         if (!user?.id) {
@@ -184,7 +185,6 @@ export async function UpdateFormContent(id: number, jsonContent: string) {
             {
                 new: true,
                 runValidators: true,
-                lean: true // Returns a plain JavaScript object instead of a Mongoose document
             }
         );
 
@@ -192,12 +192,15 @@ export async function UpdateFormContent(id: number, jsonContent: string) {
             throw new FormNotFoundErr(`Form with id ${id} not found`);
         }
 
-        // Serialize the result to ensure only simple objects are returned
+        // Convert Mongoose document to plain object
+        const plainForm = updatedForm.toObject();
+
+        // Serialize the plain object to ensure proper formatting
         return {
-            ...updatedForm,
-            _id: updatedForm._id.toString(),
-            createdAt: updatedForm.createdAt?.toISOString(),
-            updatedAt: updatedForm.updatedAt?.toISOString(),
+            ...plainForm,
+            _id: plainForm._id.toString(),
+            createdAt: plainForm.createdAt?.toISOString(),
+            updatedAt: plainForm.updatedAt?.toISOString(),
         };
     } catch (error) {
         if (error instanceof UserNotFoundErr || error instanceof FormNotFoundErr) {
@@ -207,6 +210,13 @@ export async function UpdateFormContent(id: number, jsonContent: string) {
     }
 }
 
+
+interface IFormSubmission {
+    _id: string;
+    createdAt: Date;
+    updatedAt: Date;
+    // Add other fields specific to FormSubmissions
+}
 export async function PublishForm(id: string) {
     const user = await currentUser();
     if (!user?.id) {
@@ -225,7 +235,7 @@ export async function PublishForm(id: string) {
         },
         {
             new: true,
-            lean: true // Get plain JavaScript object
+            // lean: true // Get plain JavaScript object
         }
     );
 
@@ -244,9 +254,9 @@ export async function PublishForm(id: string) {
         content: updatedForm.content,
         visits: updatedForm.visits,
         submissions: updatedForm.submissions,
-        formSubmissions: updatedForm.FormSubmissions?.map(sub => ({
+        formSubmissions: updatedForm.FormSubmissions?.map((sub: IFormSubmission) => ({
             _id: sub._id.toString(),
-            ...sub,
+            // ...sub,
             createdAt: sub.createdAt?.toISOString(),
             updatedAt: sub.updatedAt?.toISOString(),
         })),
