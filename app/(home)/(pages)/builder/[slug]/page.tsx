@@ -1,17 +1,12 @@
 import { GetFormBySlug } from '@/actions/form';
 import FormBuilder from '@/components/FormBuilder';
 
-// Define the expected params type
-interface PageProps {
-  params: {
-    slug: string;
-  };
-  searchParams: { [key: string]: string | string[] | undefined };
-}
-
-export default async function BuilderPage({
+// This should be in a file named page.tsx inside the [slug] directory
+export default async function Page({
   params,
-}: PageProps) {
+}: {
+  params: { slug: string }
+}) {
   const { slug } = params;
   const form = await GetFormBySlug(slug);
 
