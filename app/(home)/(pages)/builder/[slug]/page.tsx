@@ -1,30 +1,19 @@
+
 import { GetFormBySlug } from '@/actions/form';
 import FormBuilder from '@/components/FormBuilder';
-import type { Metadata } from 'next';
+import React from 'react';
 
-type Props = {
-  params: Promise<{ slug: string }>;
-  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
-};
-
-export async function generateMetadata(
-  { params }: Props,
-): Promise<Metadata> {
-  const slug = (await params).slug;
+type tParams = Promise<{ slug: string }>;
+async function BuilderPage(props: { params: tParams }) {
+  const { slug } = await props.params;
+  // console.log("Slug received in BuilderPage:", slug);
   const form = await GetFormBySlug(slug);
-
-  return {
-    title: form?.name || 'Form Builder',
-  };
-}
-
-export default async function Page({ params }: Props) {
-  const slug = (await params).slug;
-  const form = await GetFormBySlug(slug);
-
   if (!form) {
     throw new Error("form not found");
   }
-
-  return <FormBuilder form={form} />;
+  return (
+    <FormBuilder form={form} />
+  )
 }
+
+export default BuilderPage
