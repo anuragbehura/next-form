@@ -1,18 +1,26 @@
 import { GetFormBySlug } from '@/actions/form';
 import FormBuilder from '@/components/FormBuilder';
+import type { Metadata } from 'next';
 
-interface PageParams {
-  slug: string;
-}
-
-// Get the auto-generated PageProps type from Next.js
 type Props = {
-  params: PageParams;
-  searchParams: { [key: string]: string | string[] | undefined };
+  params: Promise<{ slug: string }>;
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 };
 
-export default async function Page(props: Props) {
-  const form = await GetFormBySlug(props.params.slug);
+export async function generateMetadata(
+  { params }: Props,
+): Promise<Metadata> {
+  const slug = (await params).slug;
+  const form = await GetFormBySlug(slug);
+
+  return {
+    title: form?.name || 'Form Builder',
+  };
+}
+
+export default async function Page({ params }: Props) {
+  const slug = (await params).slug;
+  const form = await GetFormBySlug(slug);
 
   if (!form) {
     throw new Error("form not found");
@@ -20,9 +28,3 @@ export default async function Page(props: Props) {
 
   return <FormBuilder form={form} />;
 }
-
-// Add type annotations for Next.js to generate proper types
-export type GenerateMetadata = {
-  params: PageParams;
-  searchParams: { [key: string]: string | string[] | undefined };
-};
