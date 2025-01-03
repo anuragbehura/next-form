@@ -63,8 +63,8 @@ Feedback is invaluable! If you have ideas, suggestions, or run into any issues, 
 ## 📬 Contact
 
 Have questions? Reach out to me via:
-- LinkedIn: [Anurag Behura](https://linkedin.com/in/anurag-behura)
-- Email: anurag@example.com
+- LinkedIn: [Anurag Behura](https://linkedin.com/in/anuragbehura)
+- Email: behura960@gmail.com
 
 ---
 
