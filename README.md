@@ -45,7 +45,12 @@ NextForm is a feature-rich tool designed to simplify the process of building and
 
 ## 🎥 See It in Action
 
-Check out this short demo showcasing NextForm's capabilities directly on the platform. The demo is embedded within the live application for your convenience.
+Check out this short demo showcasing NextForm's capabilities:
+
+<video width="600" controls>
+  <source src="https://drive.google.com/uc?id=1zkDZDLo6nA7ym07TMdfER7AW69c7g-wx" type="video/mp4">
+  Your browser does not support the video tag.
+</video>
 
 ---
 
