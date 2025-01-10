@@ -4,6 +4,8 @@ import { Github } from "lucide-react";
 import { FaXTwitter } from "react-icons/fa6";
 // import Logo from "./Logo";
 
+const fullYear = new Date().getFullYear();
+
 function Footer() {
   return (
     <footer className="w-full py-6 mt-16 border-t">
@@ -12,7 +14,7 @@ function Footer() {
         <div className="flex flex-col items-center space-x-4">
           {/* <Logo /> */}
           <p className="text-center md:text-right mt-4 md:mt-0">
-            &copy; {new Date().getFullYear()} NextForm. All rights reserved.
+            &copy; {fullYear} NextForm. All rights reserved.
           </p>
         </div>
 
