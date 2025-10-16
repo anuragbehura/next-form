@@ -4,13 +4,18 @@ import { SignInButton, UserButton } from "@clerk/nextjs";
 import { ArrowRight, Github, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
+import type { UserResource } from "@clerk/types";
 
-export function MobileMenu({ user }: { user: any }) {
+export function MobileMenu({ user }: { user: UserResource | null }) {
   const [open, setOpen] = useState(false);
 
   return (
     <div className="relative">
-      <button onClick={() => setOpen(!open)} className="p-2 rounded-md hover:bg-muted">
+      <button
+        onClick={() => setOpen((prev) => !prev)}
+        className="p-2 rounded-md hover:bg-muted transition"
+        aria-label="Toggle menu"
+      >
         {open ? <X size={20} /> : <Menu size={20} />}
       </button>
 
@@ -20,7 +25,7 @@ export function MobileMenu({ user }: { user: any }) {
             href="https://github.com/anuragbehura"
             target="_blank"
             rel="noopener noreferrer"
-            className="flex items-center gap-2 text-sm hover:text-gray-700"
+            className="flex items-center gap-2 text-sm hover:text-gray-700 transition"
           >
             <Github size={16} />
             GitHub
@@ -28,7 +33,7 @@ export function MobileMenu({ user }: { user: any }) {
 
           {!user ? (
             <SignInButton mode="modal">
-              <button className="flex justify-between items-center w-full bg-blue-600 text-white px-3 py-2 rounded-md text-sm">
+              <button className="flex justify-between items-center w-full bg-blue-600 text-white px-3 py-2 rounded-md text-sm transition hover:bg-blue-700">
                 Login/Signup
                 <ArrowRight size={14} />
               </button>
