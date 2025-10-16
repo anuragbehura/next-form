@@ -3,7 +3,7 @@ import Logo from "@/components/Logo";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
 import { UserButton, SignInButton } from "@clerk/nextjs";
 import { currentUser } from "@clerk/nextjs/server";
-import { ArrowRight, Github, Menu, X } from "lucide-react";
+import { ArrowRight, Github} from "lucide-react";
 import Link from "next/link";
 import { Separator } from "./ui/separator";
 import { MobileMenu } from "./MobileMenu";
