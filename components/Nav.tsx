@@ -54,7 +54,7 @@ export default async function Nav() {
         {/* Mobile Menu Button */}
         <div className="sm:hidden flex items-center gap-3">
           <ThemeSwitcher />
-          <MobileMenu user={user} />
+          <MobileMenu />
         </div>
       </div>
     </nav>

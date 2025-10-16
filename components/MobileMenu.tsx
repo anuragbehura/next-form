@@ -1,13 +1,16 @@
 "use client";
 
-import { SignInButton, UserButton } from "@clerk/nextjs";
+import { SignInButton, UserButton, useUser } from "@clerk/nextjs";
 import { ArrowRight, Github, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import type { User } from "@clerk/nextjs/server";
 
-export function MobileMenu({ user }: { user: User | null }) {
+
+export function MobileMenu() {
+  const { user, isLoaded } = useUser();
   const [open, setOpen] = useState(false);
+
+  if (!isLoaded) return null;
 
   return (
     <div className="relative">
