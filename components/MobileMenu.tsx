@@ -4,9 +4,9 @@ import { SignInButton, UserButton } from "@clerk/nextjs";
 import { ArrowRight, Github, Menu, X } from "lucide-react";
 import Link from "next/link";
 import { useState } from "react";
-import type { UserResource } from "@clerk/types";
+import type { User } from "@clerk/nextjs/server";
 
-export function MobileMenu({ user }: { user: UserResource | null }) {
+export function MobileMenu({ user }: { user: User | null }) {
   const [open, setOpen] = useState(false);
 
   return (
