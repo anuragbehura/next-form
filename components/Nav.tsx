@@ -3,7 +3,7 @@ import Logo from "@/components/Logo";
 import ThemeSwitcher from "@/components/ThemeSwitcher";
 import { UserButton, SignInButton } from "@clerk/nextjs";
 import { currentUser } from "@clerk/nextjs/server";
-import { ArrowRight, Github} from "lucide-react";
+import { ArrowRight, Github } from "lucide-react";
 import Link from "next/link";
 import { Separator } from "./ui/separator";
 import { MobileMenu } from "./MobileMenu";
@@ -12,40 +12,32 @@ export default async function Nav() {
   const user = await currentUser();
 
   return (
-    <nav className="w-full border-b border-border bg-background">
-      <div className="max-w-7xl mx-auto flex justify-between items-center h-[60px] px-4 sm:px-6 md:px-8 lg:px-20">
-        {/* Logo */}
+    // Updated: Cleaner border and background for Nav
+    <nav className="w-full border-b border-gray-100 dark:border-gray-800 bg-white dark:bg-gray-900/90 backdrop-blur-md sticky top-0 z-50">
+      <div className="max-w-7xl mx-auto flex justify-between items-center h-[70px] px-6 sm:px-8">
+        {/* Logo (Assuming this component is fine) */}
         <Logo />
 
         {/* Desktop Actions */}
-        <div className="hidden sm:flex gap-2 items-center">
-          <Link
-            href="https://github.com/anuragbehura"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="hover:text-gray-600"
-          >
-            <Github size={18} />
-          </Link>
+        <div className="hidden sm:flex gap-4 items-center">
+          {/* Add placeholder links for features/resources/pricing for completeness */}
+          <Link href="/features" className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 transition-colors text-sm font-medium">Features</Link>
+          <Link href="/pricing" className="text-gray-600 dark:text-gray-300 hover:text-indigo-600 transition-colors text-sm font-medium">Pricing</Link>
+
+          <Separator orientation="vertical" className="h-5 mx-2 bg-gray-200 dark:bg-gray-700" />
 
           <ThemeSwitcher />
-
-          {!user && <Separator orientation="vertical" className="h-6 mx-2" />}
 
           {user ? (
             <UserButton afterSignOutUrl="/sign-in" />
           ) : (
             <SignInButton mode="modal">
+              {/* Updated: Cleaner button style, less emphasis on the "Login/Signup" button to keep the focus on the main CTA */}
               <button
-                className="flex items-center px-4 py-2 bg-blue-600 text-white rounded-md text-sm 
-                 transition-all duration-300 ease-in-out group relative pr-8"
+                className="flex items-center px-4 py-2 bg-indigo-600 text-white rounded-lg text-sm font-semibold
+                  transition-all duration-300 ease-in-out hover:bg-indigo-700"
               >
-                Login/Signup
-                <ArrowRight
-                  size={16}
-                  className="absolute right-4 transition-all duration-300 ease-in-out 
-                  group-hover:translate-x-1"
-                />
+                Sign In
               </button>
             </SignInButton>
           )}
@@ -60,4 +52,3 @@ export default async function Nav() {
     </nav>
   );
 }
-
