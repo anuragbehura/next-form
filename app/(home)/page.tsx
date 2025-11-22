@@ -30,7 +30,7 @@ export default async function Home() {
             Forms that <span className="text-transparent bg-clip-text bg-gradient-to-r from-indigo-500 to-cyan-600">think ahead.</span>
           </h1>
           <p className="text-xl text-gray-600 dark:text-gray-400 max-w-2xl mx-auto leading-relaxed pt-4">
-            Next Form helps SaaS teams build smarter onboarding, qualification, and workflow forms with AI-powered logic, real-time analytics, and enterprise-grade integrations.
+            Next Form helps you build custom forms in seconds. Featuring an intuitive drag-and-drop builder, it enables SaaS teams to create smarter onboarding and workflow forms, backed by real-time analytics.
           </p>
           <div className="flex space-x-4 justify-center pt-4">
             <SignInButton>
